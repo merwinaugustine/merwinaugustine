@@ -1,0 +1,461 @@
+diff 
+
+diff [option] file1 file2
+
+f1
+
+1 Apple
+2 Samsung
+3 Nokia
+-----------------
+f2
+1 Microsoft
+2 Apple
+3 Windows
+4 Unix
+
+
+0a1 ->line 1 from the 2nd file append as oth line of the first file 
+0 Microsoft
+1 Apple
+2 Samsung
+3 Nokia
+
+2,3c3,4 -->2 and 3 line of first file need to changed as 3,4 th line of second file
+0 Microsoft
+1 Apple
+3 Windows
+4 Unix
+
+cat f1.txt
+Apple
+Samsung
+Nokia
+cat >f3.txt
+Apple
+Samsung
+^C
+ diff f1.txt f3.txt
+3d2
+< Nokia
+ diff f3.txt f1.txt
+2a3
+> Nokia
+
+options:
+	-i discard the case difference
+	-c 
+	-q 
+
+ diff -c f1.txt f2.txt
+*** f1.txt      2021-06-01 03:25:25.509323025 -0400
+--- f2.txt      2021-06-01 03:25:50.936323025 -0400
+***************
+*** 1,3 ****
+  Apple
+! Samsung
+! Nokia
+--- 1,4 ----
++ Microsoft
+  Apple
+! Windows
+! Unix
+ diff -c f1.txt f3.txt
+*** f1.txt      2021-06-01 03:25:25.509323025 -0400
+--- f3.txt      2021-06-02 00:51:39.081323025 -0400
+***************
+*** 1,3 ****
+  Apple
+  Samsung
+- Nokia
+--- 1,2 ----
+
+diff -q f1.txt f2.txt
+Files f1.txt and f2.txt differ
+
+---------------------------------------------------------------------------------
+sort :
+
+sort [option] file_name
+[0-1] [a-z] [A-Z]
+
+
+a A p c C --> a A c C p
+
+
+options: 
+-n: numerical sorting 
+
+sort s2.txt
+1
+12
+2
+3
+34
+45
+sort -n s2.txt
+1
+2
+3
+12
+34
+45
+
+-r : reversing the sorting order 
+
+-t : delimiter 
+-k : field
+
+
+Jhon#34#34500
+Mary#45#45000
+George#23#28000
+Ann#60#234400
+req: based on age 
+
+sort -t "#" -k2,2 emp_det
+George#23#28000
+Jhon#34#34500
+Mary#45#45000
+Ann#60#234400
+
+sort -nt "#" -k2,3 emp_det
+George#23#28000
+Jhon#34#34500
+Mary#45#45000
+Ann#60#234400
+kim#60#670000
+
+-u : remove the duplicate lines
+sort s3.txt
+a
+A
+A
+B
+sort -u s3.txt
+a
+A
+B
+
+-c: check 
+sort -c name.txt
+sort: name.txt:3: disorder: Chethan
+
+----------------------------------------------------
+uniq: remove the consicutive occurance of a line 
+
+-u :select the non repeted lines
+-d :select the duplicate lines
+-c :count the frequency of occurance
+------------------------------------------------------
+tr (transalating the char )
+
+tr [options] exp1 exp2 <file_name
+
+-d : delete the char
+-c :complement the expression 
+-s : supress the occurance of consicutive char
+
+ cat >tr1.txt
+"thi1s is line one1"
+'this i2s line32 two1"
+
+ cat tr1.txt
+"thi1s is line one1"
+'this i2s line32 two1"
+$ tr '[a-z]' '[A-Z]' <tr1.txt
+"THI1S IS LINE ONE1"
+'THIS I2S LINE32 TWO1"
+$ cat tr1.txt
+"thi1s is line one1"
+'this i2s line32 two1"
+$ tr '"' "'" <tr1.txt
+'thi1s is line one1'
+'this i2s line32 two1'
+$ tr -d [0-9] <tr1.txt
+"this is line one"
+'this is line two"
+$ tr -d [0] <tr1.txt
+"thi1s is line one1"
+'this i2s line32 two1"
+$ tr -d [2] <tr1.txt
+"thi1s is line one1"
+'this is line3 two1"
+$ tr -d [1-5] <tr1.txt
+"this is line one"
+'this is line two"
+ tr -cd [1-5] <tr1.txt
+112321[er1069247@MYSUL01M unix_jit]$
+]$ cat >tr2.txt
+aaaaaaa caaaaaaaaaaaar
+
+ tr -s [a-z] <tr1.txt
+"thi1s is line one1"
+'this i2s line32 two1"
+ tr -s [a-z] <tr2.txt
+a car
+--------------------------------------------------------------------------------------
+Pattern Matching in Unix
+
+grep 
+egrep /grep -E
+grep -P
+
+
+grep [option] pattern [file_name]
+-i case insensitive comparision 
+grep "e" name.txt
+
+-x : exact match 
+
+metachar 
+.  match for any char single occurance
++  one/more of preceeding char
+* 0/more of precedign chat
+? 0/one preceeding char 
+[] list of possibel char 
+[a-z] [A-Z]
+[0-9] [a-d] [abc] [qtgA] [!@#$]
+
+name ->first_name last_name 
+can have only letter
+first_naem and last_name should start with Capital letter
+
+cat name.txt
+Peter
+Jhon
+Mary Jhon
+Kim Tara
+geroge m
+bhavya
+bhavya baburaj
+1aby
+Nith   S D
+Lara D1
+
+$ egrep -x "[A-Z][a-zA-Z]*[ ][A-Z][a-zA-Z]*" name.txt
+
+Mary Jhon
+Kim Tara
+
+
+name ->first_name last_name 
+last name is optional 
+can have only letter
+first_naem and last_name should start with Capital letter
+
+egrep -x "[A-Z][a-zA-Z]*([ ][A-Z][a-zA-Z]*)?" name.txt
+Peter
+Jhon
+Mary Jhon
+Kim Tara
+$ egrep -x "[A-Z][a-zA-Z]*([ ][A-Z][a-zA-Z]*)+" name.txt
+Mary Jhon
+Kim Tara
+$ egrep -x "[A-Z][a-zA-Z]*([ ][A-Z][a-zA-Z]*)*" name.txt
+Peter
+Jhon
+Mary Jhon
+Kim Tara
+
+
+
+^ ->strat or beginnig 
+$ ->end
+
+"^p" name.txt
+$ egrep "^[A-Z]" name.txt
+Peter
+Jhon
+Mary Jhon
+Kim Tara
+Nith   S D
+Lara D1
+$ egrep "[a-z]$" name.txt
+Peter
+Jhon
+Mary Jhon
+Kim Tara
+geroge m
+bhavya baburaj
+1aby
+ egrep "[0-1]$" name.txt
+Lara D1
+
+
+[^ ] -> except the list of letters mentioned will be matched
+
+{m} ->exactly m times the preceedign char 
+{m,n} -->minimum m max n
+
+[A-Z]{1,5}
+
+{,n} --min 0 max n
+ 
+[a-z]{,5}
+
+
+{m,} minimum m max 
+
+[a-z]{3,}
+
+req: valid phone number
+10 ->lenght 
+egrep "^[0-9]{10}$" phone.txt
+0987654321
+9087654321
+7654432220
+8032097381
+
+| ->or
+patter1|patter2
+
+hollywood
+food
+bollywood
+wood
+
+
+egrep (bolly|holly)wood 
+
+[0-9] == \d
+[a-zA-Z0-9_] == \w
+[^0-9]==\D
+ \s ==>space
+[^a-zA-Z0-9_] == \W
+ 
+
+\.  [.] -->escape the special 
+
+-------------------------------------------------------------------------------
+Access Permission :
+
+-user/owner =u
+-group =g
+-other =o
+
+access permissions
+read -r
+write -w
+execute -x
+
+--- --- ---
+u    g   o
+
+rw-rw-r--. 1 er1069247 er1069247   0 Jun  1 01:41 c1.sql
+
+0 000 ---
+1 001 --x
+2 010 -w-
+3 011 -wx
+4 100 r--
+5 101 r-x
+6 110 rw-
+7 111 rwz 
+
+rw-rw-r-- ==>664 
+r-x r-- rwx ==>547
+
+
+1.umask  --> 
+
+
+default umask value=0002
+
+666  -->base permission 
+777 -->base permission 
+
+-rw-rw-r--. 1 er1069247 er1069247 0 Jun  2 02:50 n1
+
+
+rw- rw- rw- ==666
+000 000 010 ==002 
+-----------------------
+rw- rw- r-- ==664
+
+req:222 
+rw- rw- rw- ==666
+100 100 100 ==444
+-------------------
+-w- -w- -w-
+010 010 010  ==222(file perm)
+--w--w--w-. 1 er1069247 er1069247 0 Jun  2 02:55 n2
+
+
+777 
+rwx rwx rwx ==777 (base)
+000 000 010 ==002
+----------------------------
+rwx rwx r-x  ==775 (dir permission)
+
+drwxrwxr-x. 2 er1069247 er1069247   6 Jun  2 02:56 d1
+
+=>chmod 
+chomd [options] mode file
+
+chmod 775 d1
+
+drwxrwxr-x. 2 er1069247 er1069247   6 Jun  2 02:56 d1
+
+req : remove the execute permission for d1
+
+chmod o-x d1
+
+drwxrwxr--. 2 er1069247 er1069247   6 Jun  2 02:56 d1
+
+red : remove w from all
+
+chmod a-w d1
+
+req :only x permission for all
+
+chmod a=x d1 
+
+[ugoa][+=-][rwx]
+
+u=rw
+u+w
+o+r 
+chmod u=rw,o+r n1
+-R -recursively 
+--reference 
+$ ls -l n1
+-rw--w-rw-. 1 er1069247 er1069247 0 Jun  2 02:50 n1
+$ ls -l n2
+--w--w--w-. 1 er1069247 er1069247 0 Jun  2 02:55 n2
+$ chmod --reference ./n1 ./n2
+$ ls -l n1
+-rw--w-rw-. 1 er1069247 er1069247 0 Jun  2 02:50 n1
+$ ls -l n2
+-rw--w-rw-. 1 er1069247 er1069247 0 Jun  2 02:55 n2
+
+---------------------------------------------------------------
+Data Backup in Unix 
+
+cp,mv,tar,cpio 
+
+cp ->copy 
+cp sourceloc destloc
+
+-b : back up 
+-i : interactive 
+-R : copy recursive
+-n : do not overwrite the existing file 
+
+-------------------------------------------
+mv : 
+
+mv option sorc desc 
+
+-b :back up 
+-i : interactive 
+-u :update
+-n: do not overwrite the existing file 
+----------------------------------------------------------
+
+
+
+
+
+
+
